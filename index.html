@@ -2,105 +2,126 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>INI RENDY</title>
+<title>RENDY☠️🥀</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <style>
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: black;
-  color: red;
-  font-family: Arial, sans-serif;
+html,body{
+  margin:0; padding:0; width:100%; height:100%;
+  overflow:hidden; background:black; font-family:Arial, sans-serif;
 }
 
-#bg {
-  position: fixed;
-  inset: 0;
-  font-size: 14px;
-  line-height: 16px;
-  opacity: 0.25;
-  white-space: pre-wrap;
-  word-break: break-word;
+/* BACKGROUND ACAK SUPER CEPAT */
+#bg{
+  position:fixed; inset:0;
+  color:#00ff00; font-size:11px; line-height:13px;
+  opacity:.22; white-space:pre-wrap; word-break:break-word;
+  animation:flicker .08s infinite;
+  z-index:1;
+}
+@keyframes flicker{0%{opacity:.1}50%{opacity:.35}100%{opacity:.15}}
+
+/* FLASH MERAH */
+#flash{
+  position:fixed; inset:0; background:red; opacity:0;
+  animation:flash .2s infinite;
+  z-index:9; pointer-events:none;
+}
+@keyframes flash{0%,80%{opacity:0}81%{opacity:.35}100%{opacity:0}}
+
+/* LAYER CHAOS */
+#layer{ position:fixed; inset:0; z-index:5; pointer-events:none; }
+
+/* TEKS */
+.text{
+  position:absolute; font-size:36px; font-weight:900; color:red;
+  text-shadow:0 0 10px red, 0 0 25px black;
+  animation:spinzoom 1.6s linear forwards;
+}
+@keyframes spinzoom{
+  0%{transform:scale(.2) rotate(0); opacity:1}
+  100%{transform:scale(4) rotate(1080deg); opacity:0}
 }
 
-#start {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: black;
-  z-index: 999;
+/* SHAKE LAYAR */
+.shake{ animation:shake .06s infinite; }
+@keyframes shake{
+  0%{transform:translate(0,0)}
+  25%{transform:translate(6px,-6px)}
+  50%{transform:translate(-6px,6px)}
+  75%{transform:translate(6px,6px)}
+  100%{transform:translate(0,0)}
 }
 
-button {
-  font-size: 28px;
-  padding: 20px 40px;
-  background: red;
-  color: white;
-  border: none;
-  cursor: pointer;
+/* TAP */
+#tap{
+  position:fixed; inset:0; z-index:999;
+  background:black; color:red; font-size:26px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; animation:blink .5s infinite;
 }
+@keyframes blink{0%{opacity:1}50%{opacity:.25}100%{opacity:1}}
 </style>
 </head>
 <body>
 
 <div id="bg"></div>
+<div id="layer"></div>
+<div id="flash"></div>
 
-<div id="start">
-  <button onclick="mulai()">MULAI</button>
-</div>
+<div id="tap" onclick="start()">TAP SEKARANG</div>
 
 <audio id="scream" loop>
-  <!-- GANTI DENGAN FILE SUARA KAMU -->
   <source src="scream.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-function randomText(len) {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*";
-  let out = "";
-  for (let i = 0; i < len; i++) {
-    out += chars[Math.floor(Math.random() * chars.length)];
+/* ===== BACKGROUND RANDOM ===== */
+const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789☠️🥀#$%&@";
+function bg(){
+  let t="";
+  for(let i=0;i<12000;i++){
+    t+=chars[Math.floor(Math.random()*chars.length)];
   }
-  return out;
+  document.getElementById("bg").textContent=t;
 }
+setInterval(bg,70);
 
-// Background tulisan acak
-setInterval(() => {
-  document.getElementById("bg").textContent =
-    randomText(5000);
-}, 200);
-
-// Popup beruntun
-function spamAlert() {
-  alert("INI RENDY");
+/* ===== SPAWN TEKS GILA ===== */
+function spawn(){
+  const e=document.createElement("div");
+  e.className="text";
+  e.textContent="RENDY☠️🥀";
+  e.style.left=(Math.random()*95)+"%";
+  e.style.top=(Math.random()*95)+"%";
+  document.getElementById("layer").appendChild(e);
+  setTimeout(()=>e.remove(),1600);
 }
+setInterval(spawn,45);
 
-// Getar HP
-function vibrateLoop() {
-  if (navigator.vibrate) {
-    navigator.vibrate([500, 300, 500, 300]);
+/* ===== GETAR ===== */
+function vibrate(){
+  if(navigator.vibrate){
+    navigator.vibrate([250,120,250,120,400]);
   }
 }
 
-function mulai() {
-  document.getElementById("start").remove();
+/* ===== START ===== */
+function start(){
+  document.getElementById("tap").remove();
 
-  // Suara
-  const audio = document.getElementById("scream");
-  audio.volume = 1.0;
-  audio.play();
+  // audio
+  const a=document.getElementById("scream");
+  a.volume=1; a.play();
 
-  // Popup spam
-  setInterval(spamAlert, 700);
+  // getar loop
+  setInterval(vibrate,800);
 
-  // Getar loop
-  setInterval(vibrateLoop, 1200);
+  // shake layar
+  document.body.classList.add("shake");
+
+  // tambah chaos (double spawn)
+  setInterval(spawn,25);
 }
 </script>
-
 </body>
 </html>
