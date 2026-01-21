@@ -1,99 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>System Error</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INI RENDY</title>
 <style>
 html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    background: black;
-    overflow: hidden;
-    font-family: monospace;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: black;
+  color: red;
+  font-family: Arial, sans-serif;
 }
 
-/* Background random characters */
-#background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    white-space: pre;
-    font-size: 13px;
-    line-height: 13px;
-    color: #00ff00;
-    opacity: 0.35;
-    animation: flicker 0.12s infinite;
+#bg {
+  position: fixed;
+  inset: 0;
+  font-size: 14px;
+  line-height: 16px;
+  opacity: 0.25;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
-@keyframes flicker {
-    0% { opacity: 0.25; }
-    50% { opacity: 0.45; }
-    100% { opacity: 0.3; }
+#start {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: black;
+  z-index: 999;
 }
 
-/* Center text */
-#message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: red;
-    font-size: 42px;
-    text-align: center;
-    z-index: 2;
-    animation: shake 0.15s infinite;
-}
-
-@keyframes shake {
-    0% { transform: translate(-50%, -50%) translate(2px, 2px); }
-    50% { transform: translate(-50%, -50%) translate(-2px, -2px); }
-    100% { transform: translate(-50%, -50%) translate(2px, -2px); }
+button {
+  font-size: 28px;
+  padding: 20px 40px;
+  background: red;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
 </style>
 </head>
 <body>
 
-<div id="background"></div>
-<div id="message">YOU ARE IDIOT<br>HAHAHAHA</div>
+<div id="bg"></div>
 
-<audio id="audio" autoplay loop>
-    <source src="https://www.soundjay.com/human/sounds/laughter-01.mp3" type="audio/mpeg">
+<div id="start">
+  <button onclick="mulai()">MULAI</button>
+</div>
+
+<audio id="scream" loop>
+  <!-- GANTI DENGAN FILE SUARA KAMU -->
+  <source src="scream.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-/* popup */
-setTimeout(() => {
-    alert("YOU ARE IDIOT HAHAHAHA");
-}, 600);
-
-/* random text background */
-const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*+=<>/?";
-const bg = document.getElementById("background");
-
-function generateBackground() {
-    let output = "";
-    const rows = Math.floor(window.innerHeight / 13);
-    const cols = Math.floor(window.innerWidth / 8);
-    for (let i = 0; i < rows; i++) {
-        for (let j = 0; j < cols; j++) {
-            output += chars[Math.floor(Math.random() * chars.length)];
-        }
-        output += "\n";
-    }
-    bg.textContent = output;
+function randomText(len) {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*";
+  let out = "";
+  for (let i = 0; i < len; i++) {
+    out += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return out;
 }
 
-setInterval(generateBackground, 100);
-generateBackground();
+// Background tulisan acak
+setInterval(() => {
+  document.getElementById("bg").textContent =
+    randomText(5000);
+}, 200);
 
-/* fullscreen + sound (butuh tap di beberapa browser) */
-document.addEventListener("click", () => {
-    document.documentElement.requestFullscreen?.();
-    document.getElementById("audio").play();
-});
+// Popup beruntun
+function spamAlert() {
+  alert("INI RENDY");
+}
+
+// Getar HP
+function vibrateLoop() {
+  if (navigator.vibrate) {
+    navigator.vibrate([500, 300, 500, 300]);
+  }
+}
+
+function mulai() {
+  document.getElementById("start").remove();
+
+  // Suara
+  const audio = document.getElementById("scream");
+  audio.volume = 1.0;
+  audio.play();
+
+  // Popup spam
+  setInterval(spamAlert, 700);
+
+  // Getar loop
+  setInterval(vibrateLoop, 1200);
+}
 </script>
 
 </body>
