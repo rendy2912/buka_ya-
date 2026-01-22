@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Selamat Untuk Kakak</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 body {
     margin: 0;
@@ -13,18 +14,23 @@ body {
     text-align: center;
     overflow: hidden;
 }
+
 .page {
     display: none;
     height: 100vh;
     padding: 20px;
     box-sizing: border-box;
+    position: relative;
+    z-index: 2;
 }
-.active {
+
+.page.active {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
+
 button {
     margin-top: 30px;
     padding: 14px 30px;
@@ -33,14 +39,19 @@ button {
     border-radius: 10px;
     background: #ffcc00;
 }
+
 #typing {
     font-size: 18px;
     max-width: 600px;
 }
+
+/* canvas di belakang & tidak ganggu klik */
 canvas {
     position: fixed;
     top: 0;
     left: 0;
+    z-index: 1;
+    pointer-events: none;
 }
 </style>
 </head>
@@ -49,7 +60,7 @@ canvas {
 
 <div class="page active" id="page1">
     <h1 id="typing"></h1>
-    <button onclick="startShow()">Mulai 🎉</button>
+    <button id="startBtn">Mulai 🎉</button>
 </div>
 
 <div class="page" id="page2">
@@ -61,8 +72,10 @@ canvas {
 <canvas id="fireworks"></canvas>
 
 <script>
+/* ===== TEXT TYPING ===== */
 const text = "Halo kak!, makasih ya selama ini udah ngajarin aku tentang dunia digital";
 let i = 0;
+
 function typeText() {
     if (i < text.length) {
         document.getElementById("typing").innerHTML += text.charAt(i);
@@ -71,6 +84,9 @@ function typeText() {
     }
 }
 typeText();
+
+/* ===== BUTTON EVENT ===== */
+document.getElementById("startBtn").addEventListener("click", startShow);
 
 function startShow() {
     document.getElementById("page1").classList.remove("active");
@@ -83,6 +99,7 @@ function startShow() {
     const audio = document.getElementById("musik");
     audio.volume = 0;
     audio.play();
+
     let vol = 0;
     const fade = setInterval(() => {
         if (vol < 0.8) {
@@ -94,42 +111,56 @@ function startShow() {
     startFireworks();
 }
 
+/* ===== FIREWORKS ===== */
 const canvas = document.getElementById("fireworks");
 const ctx = canvas.getContext("2d");
-canvas.width = innerWidth;
-canvas.height = innerHeight;
+
+function resize() {
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
 let particles = [];
 
 function startFireworks() {
     setInterval(() => {
         for (let j = 0; j < 5; j++) {
-            const x = Math.random()*canvas.width;
-            const y = Math.random()*canvas.height/2;
-            for (let i = 0; i < 80; i++) {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height / 2;
+            for (let i = 0; i < 60; i++) {
                 particles.push({
-                    x,y,
-                    vx:(Math.random()-0.5)*10,
-                    vy:(Math.random()-0.5)*10,
-                    life:120,
-                    color:`hsl(${Math.random()*360},100%,60%)`
+                    x, y,
+                    vx: (Math.random()-0.5)*8,
+                    vy: (Math.random()-0.5)*8,
+                    life: 100,
+                    color: `hsl(${Math.random()*360},100%,60%)`
                 });
             }
         }
     }, 700);
+
     animate();
 }
 
 function animate() {
     ctx.fillStyle = "rgba(0,0,0,0.2)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
+
     particles.forEach((p,i)=>{
-        p.x+=p.vx; p.y+=p.vy; p.life--;
-        ctx.fillStyle=p.color;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+
+        ctx.fillStyle = p.color;
         ctx.beginPath();
         ctx.arc(p.x,p.y,3,0,Math.PI*2);
         ctx.fill();
-        if(p.life<=0) particles.splice(i,1);
+
+        if(p.life <= 0) particles.splice(i,1);
     });
+
     requestAnimationFrame(animate);
 }
 </script>
